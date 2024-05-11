@@ -1,8 +1,12 @@
 const express = require('express');
-const { getEmployees } = require('../controllers/employee-controller');
+const { getEmployees, getEmployee, getOtherEmployee } = require('../controllers/employee-controller');
+const passport = require('passport');
+const checkRoles = require('../middleware/check-roles');
 
 const router = express.Router();
 
-router.get('/', getEmployees);
+router.get('/', passport.authenticate('jwt', { session: false }), checkRoles(['ADMIN']), getEmployees);
+router.get('/:id', passport.authenticate('jwt', { session: false }), checkRoles(['ADMIN', 'EMPLOYEE']), getEmployee);
+router.get('/other/:id', passport.authenticate('jwt', { session: false }), checkRoles(['ADMIN']), getOtherEmployee);
 
 module.exports = router;

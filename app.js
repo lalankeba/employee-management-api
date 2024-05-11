@@ -5,12 +5,17 @@ const logger = require('./middleware/logger');
 const homeRoute = require('./routes/home-route');
 const employeeRoute = require('./routes/employee-route');
 const authRoute = require('./routes/auth-route');
+const passport = require('passport');
+const passportConfig = require('./middleware/passport-config');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
+passportConfig(passport);
+
 app.use(logger);
 app.use(express.json());
+app.use(passport.initialize());
 
 app.use('/', homeRoute);
 app.use('/employees', employeeRoute);

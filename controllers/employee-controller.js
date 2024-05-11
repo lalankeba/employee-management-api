@@ -15,11 +15,34 @@ const getEmployees = async (req, res) => {
 }
 
 const getEmployee = async (req, res) => {
-    try {        
+    try {
+        const loggedInEmployeeId = req.user.id;
+        const { id } = req.params;
+        if (loggedInEmployeeId === id) { // currently logged in user checks own data
+            const employee = await employeeModel.findById(id);
+            if (employee) {
+                const employeeObj = employee.toObject();
+                delete employeeObj.password; // removing hashed password
+                res.status(200).json(employeeObj);
+            } else {
+                res.status(404).json({ message: `Employee cannot be found for id: ${id}` });
+            }
+        } else { // currently logged in user checks other's data
+            res.status(401).json({ message: `Can't access other employees data` });
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+}
+
+const getOtherEmployee = async (req, res) => {
+    try {
         const { id } = req.params;
         const employee = await employeeModel.findById(id);
         if (employee) {
-            res.status(200).json(employee);
+            const employeeObj = employee.toObject();
+            delete employeeObj.password; // removing hashed password
+            res.status(200).json(employeeObj);
         } else {
             res.status(404).json({ message: `Employee cannot be found for id: ${id}` });
         }
@@ -28,46 +51,4 @@ const getEmployee = async (req, res) => {
     }
 }
 
-const updateEmployee = async (req, res) => {
-    try {
-        const { id } = req.employee.id;
-        const updatedProduct = await employeeModel.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
-        if (updatedProduct) {
-            res.status(200).json(updatedProduct);
-        } else {
-            res.status(404).json({ message: `Cannot update product for id: ${id}` });
-        }
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-}
-
-const updateOtherEmployee = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const updatedProduct = await employeeModel.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
-        if (updatedProduct) {
-            res.status(200).json(updatedProduct);
-        } else {
-            res.status(404).json({ message: `Cannot update product for id: ${id}` });
-        }
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-}
-
-const deleteProduct = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const deletedProduct = await productSchema.findByIdAndDelete(id);
-        if (deletedProduct) {
-            res.status(200).json(deletedProduct);
-        } else {
-            res.status(404).json({ message: `Cannot delete product for id: ${id}` });
-        }
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-}
-
-module.exports = { getEmployees, getEmployee };
+module.exports = { getEmployees, getEmployee, getOtherEmployee };
