@@ -9,6 +9,7 @@ Employee management system developed with Node.js, Express and MongoDB.
 ```
 MONGO_URI="<connection-string>"
 PORT=<desired-port>
+JWT_SECRET=<secret-key>
 ```
 4. Use `npm run dev` command to run the app.
 
