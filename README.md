@@ -21,16 +21,20 @@ curl http://localhost:3000/
 curl http://localhost:3000/home
 ```
 
-### Register Employee
+### Register employee
 ```
-curl http://localhost:3000/auth/register/ -H 'Content-Type: application/json' -d '{ "firstName": "John", "lastName":"Doe", "gender":"MALE", "username": "john@gmail.com", "password": "abcd1234" }'
+curl http://localhost:3000/auth/register/ -H 'Content-Type: application/json' \
+-d '{ "firstName": "John", "lastName":"Doe", "gender":"MALE", "username": "john@gmail.com", "password": "abcd1234" }'
 ```
 
 ### Login employee
-curl http://localhost:3000/auth/login/ -H 'Content-Type: application/json' -d '{ "username": "john@gmail.com", "password": "abcd1234" }'
+```
+curl http://localhost:3000/auth/login/ -H 'Content-Type: application/json' \
+-d '{ "username": "john@gmail.com", "password": "abcd1234" }'
+```
 
 
-### Get Employees
+### Get list of employees
 First 5 employees can be retrieved.
 ```
 curl http://localhost:3000/employees/ -H 'Authorization: Bearer <token>' | jq .
@@ -39,4 +43,36 @@ curl http://localhost:3000/employees/ -H 'Authorization: Bearer <token>' | jq .
 With pagination
 ```
 curl http://localhost:3000/employees?page=1&size=5 -H 'Authorization: Bearer <token>'
+```
+
+### Get logged in employee
+```
+curl http://localhost:3000/employees/employee/ -H 'Authorization: Bearer <token>'
+```
+
+### Get another employee
+```
+curl http://localhost:3000/employees/employee/<id> -H 'Authorization: Bearer <token>'
+```
+
+### Update logged in employee
+```
+curl -X PUT http://localhost:3000/employees/ -H 'Content-Type: application/json' \
+-H 'Authorization: Bearer <token>' \
+-d '{ "firstName": "Mary", "lastName":"Anne", "gender":"FEMALE" }'
+```
+
+### Update another employee
+```
+curl -X PUT http://localhost:3000/employees/<id> -H 'Content-Type: application/json' \
+-H 'Authorization: Bearer <token>' \
+-d '{ "firstName": "Mary", "lastName":"Anne", "gender":"FEMALE" }'
+```
+
+
+### Delete employee (need to be an admin)
+```
+curl -X PUT http://localhost:3000/employees/<id> -H 'Content-Type: application/json' \
+-H 'Authorization: Bearer <token>' \
+-d '{ "firstName": "Mary", "lastName":"Anne", "gender":"FEMALE" }'
 ```
