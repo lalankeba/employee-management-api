@@ -64,4 +64,23 @@ const updateEmployee = async (req, res) => {
     }
 }
 
-module.exports = { getEmployees, getEmployee, getOtherEmployee, updateEmployee };
+const deleteEmployee = async (req, res) => {
+    try {
+        const loggedInEmployeeId = req.user.id;
+        const { id } = req.params;
+        if (loggedInEmployeeId === id) { // can't delete himself
+            res.status(400).json({ message: `Access denied. You don't have necessary permission to delete youself` });
+        } else {
+            const deletedEmployee = await employeeModel.findByIdAndDelete(id);
+            if (deletedEmployee) {
+                res.status(200).json(deletedEmployee);
+            } else {
+                res.status(404).json({ message: `Cannot delete employee for id: ${id}` });
+            }
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+}
+
+module.exports = { getEmployees, getEmployee, getOtherEmployee, updateEmployee, deleteEmployee };
