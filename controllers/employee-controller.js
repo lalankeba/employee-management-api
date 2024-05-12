@@ -51,4 +51,23 @@ const getOtherEmployee = async (req, res) => {
     }
 }
 
-module.exports = { getEmployees, getEmployee, getOtherEmployee };
+const updateEmployee = async (req, res) => {
+    try {
+        const loggedInEmployeeId = req.user.id;
+        const { firstName, lastName, gender } = req.body;
+        const dataToBeUpdated = {firstName, lastName, gender};
+        console.log(dataToBeUpdated);
+        const updatedEmployee = await employeeModel.findByIdAndUpdate(loggedInEmployeeId, dataToBeUpdated, { new: true, runValidators: true });
+        if (updatedEmployee) {
+            const updatedEmployeeObj = updatedEmployee.toObject();
+            delete updatedEmployeeObj.password; // removing hashed password
+            res.status(200).json(updatedEmployeeObj);
+        } else {
+            res.status(404).json({ message: `Cannot update employee for id: ${loggedInEmployeeId}` });
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+}
+
+module.exports = { getEmployees, getEmployee, getOtherEmployee, updateEmployee };
