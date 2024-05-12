@@ -17,18 +17,13 @@ const getEmployees = async (req, res) => {
 const getEmployee = async (req, res) => {
     try {
         const loggedInEmployeeId = req.user.id;
-        const { id } = req.params;
-        if (loggedInEmployeeId === id) { // currently logged in user checks own data
-            const employee = await employeeModel.findById(id);
-            if (employee) {
-                const employeeObj = employee.toObject();
-                delete employeeObj.password; // removing hashed password
-                res.status(200).json(employeeObj);
-            } else {
-                res.status(404).json({ message: `Employee cannot be found for id: ${id}` });
-            }
-        } else { // currently logged in user checks other's data
-            res.status(401).json({ message: `Can't access other employees data` });
+        const employee = await employeeModel.findById(loggedInEmployeeId);
+        if (employee) {
+            const employeeObj = employee.toObject();
+            delete employeeObj.password; // removing hashed password
+            res.status(200).json(employeeObj);
+        } else {
+            res.status(404).json({ message: `Employee cannot be found for id: ${loggedInEmployeeId}` });
         }
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -56,7 +51,6 @@ const updateEmployee = async (req, res) => {
         const loggedInEmployeeId = req.user.id;
         const { firstName, lastName, gender } = req.body;
         const dataToBeUpdated = {firstName, lastName, gender};
-        console.log(dataToBeUpdated);
         const updatedEmployee = await employeeModel.findByIdAndUpdate(loggedInEmployeeId, dataToBeUpdated, { new: true, runValidators: true });
         if (updatedEmployee) {
             const updatedEmployeeObj = updatedEmployee.toObject();
