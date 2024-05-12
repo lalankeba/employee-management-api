@@ -21,7 +21,22 @@ curl http://localhost:3000/
 curl http://localhost:3000/home
 ```
 
-### Get Employees
+### Register Employee
 ```
-curl http://localhost:3000/employees
+curl http://localhost:3000/auth/register/ -H 'Content-Type: application/json' -d '{ "firstName": "John", "lastName":"Doe", "gender":"MALE", "username": "john@gmail.com", "password": "abcd1234" }'
+```
+
+### Login employee
+curl http://localhost:3000/auth/login/ -H 'Content-Type: application/json' -d '{ "username": "john@gmail.com", "password": "abcd1234" }'
+
+
+### Get Employees
+First 5 employees can be retrieved.
+```
+curl http://localhost:3000/employees/ -H 'Authorization: Bearer <token>' | jq .
+```
+
+With pagination
+```
+curl http://localhost:3000/employees?page=1&size=5 -H 'Authorization: Bearer <token>'
 ```
