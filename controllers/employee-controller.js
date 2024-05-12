@@ -64,6 +64,29 @@ const updateEmployee = async (req, res) => {
     }
 }
 
+const updateOtherEmployee = async (req, res) => {
+    try {
+        const loggedInEmployeeId = req.user.id;
+        const { id } = req.params;
+        if (loggedInEmployeeId === id) {
+            res.status(400).json({ message: `Access denied. Use self API to update yourself` });
+        } else {
+            const { firstName, lastName, gender } = req.body;
+            const dataToBeUpdated = {firstName, lastName, gender};
+            const updatedEmployee = await employeeModel.findByIdAndUpdate(id, dataToBeUpdated, { new: true, runValidators: true });
+            if (updatedEmployee) {
+                const updatedEmployeeObj = updatedEmployee.toObject();
+                delete updatedEmployeeObj.password; // removing hashed password
+                res.status(200).json(updatedEmployeeObj);
+            } else {
+                res.status(404).json({ message: `Cannot update employee for id: ${id}` });
+            }
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+}
+
 const deleteEmployee = async (req, res) => {
     try {
         const loggedInEmployeeId = req.user.id;
@@ -83,4 +106,4 @@ const deleteEmployee = async (req, res) => {
     }
 }
 
-module.exports = { getEmployees, getEmployee, getOtherEmployee, updateEmployee, deleteEmployee };
+module.exports = { getEmployees, getEmployee, getOtherEmployee, updateEmployee, updateOtherEmployee, deleteEmployee };
