@@ -37,7 +37,7 @@ curl http://localhost:3000/auth/login/ -H 'Content-Type: application/json' \
 ### Get list of employees
 First 5 employees can be retrieved.
 ```
-curl http://localhost:3000/employees/ -H 'Authorization: Bearer <token>' | jq .
+curl http://localhost:3000/employees/ -H 'Authorization: Bearer <token>'
 ```
 
 With pagination
