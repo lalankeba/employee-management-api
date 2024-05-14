@@ -17,11 +17,9 @@ const getEmployees = async (req, res) => {
 const getEmployee = async (req, res) => {
     try {
         const loggedInEmployeeId = req.user.id;
-        const employee = await employeeModel.findById(loggedInEmployeeId);
+        const employee = await employeeModel.findById(loggedInEmployeeId, { firstName: 1, lastName: 1, gender: 1, username: 1, roles: 1, createdAt: 1, updatedAt: 1 });
         if (employee) {
-            const employeeObj = employee.toObject();
-            delete employeeObj.password; // removing hashed password
-            res.status(200).json(employeeObj);
+            res.status(200).json(employee);
         } else {
             res.status(404).json({ message: `Employee cannot be found for id: ${loggedInEmployeeId}` });
         }
@@ -33,11 +31,9 @@ const getEmployee = async (req, res) => {
 const getOtherEmployee = async (req, res) => {
     try {
         const { id } = req.params;
-        const employee = await employeeModel.findById(id);
+        const employee = await employeeModel.findById(id, { firstName: 1, lastName: 1, gender: 1, username: 1, roles: 1, createdAt: 1, updatedAt: 1 });
         if (employee) {
-            const employeeObj = employee.toObject();
-            delete employeeObj.password; // removing hashed password
-            res.status(200).json(employeeObj);
+            res.status(200).json(employee);
         } else {
             res.status(404).json({ message: `Employee cannot be found for id: ${id}` });
         }
@@ -51,11 +47,11 @@ const updateEmployee = async (req, res) => {
         const loggedInEmployeeId = req.user.id;
         const { firstName, lastName, gender } = req.body;
         const dataToBeUpdated = {firstName, lastName, gender};
-        const updatedEmployee = await employeeModel.findByIdAndUpdate(loggedInEmployeeId, dataToBeUpdated, { new: true, runValidators: true });
+        const updatedEmployee = await employeeModel.findByIdAndUpdate(loggedInEmployeeId, dataToBeUpdated, 
+            { new: true, runValidators: true })
+            .select({ firstName: 1, lastName: 1, gender: 1, username: 1, roles: 1, createdAt: 1, updatedAt: 1 });
         if (updatedEmployee) {
-            const updatedEmployeeObj = updatedEmployee.toObject();
-            delete updatedEmployeeObj.password; // removing hashed password
-            res.status(200).json(updatedEmployeeObj);
+            res.status(200).json(updatedEmployee);
         } else {
             res.status(404).json({ message: `Cannot update employee for id: ${loggedInEmployeeId}` });
         }
@@ -71,13 +67,13 @@ const updateOtherEmployee = async (req, res) => {
         if (loggedInEmployeeId === id) {
             res.status(400).json({ message: `Access denied. Use self API to update yourself` });
         } else {
-            const { firstName, lastName, gender } = req.body;
-            const dataToBeUpdated = {firstName, lastName, gender};
-            const updatedEmployee = await employeeModel.findByIdAndUpdate(id, dataToBeUpdated, { new: true, runValidators: true });
+            const { firstName, lastName, gender, roles } = req.body;
+            const dataToBeUpdated = {firstName, lastName, gender, roles};
+            const updatedEmployee = await employeeModel.findByIdAndUpdate(id, dataToBeUpdated, 
+                { new: true, runValidators: true })
+                .select({ firstName: 1, lastName: 1, gender: 1, username: 1, roles: 1, createdAt: 1, updatedAt: 1 });
             if (updatedEmployee) {
-                const updatedEmployeeObj = updatedEmployee.toObject();
-                delete updatedEmployeeObj.password; // removing hashed password
-                res.status(200).json(updatedEmployeeObj);
+                res.status(200).json(updatedEmployee);
             } else {
                 res.status(404).json({ message: `Cannot update employee for id: ${id}` });
             }
@@ -96,7 +92,9 @@ const deleteEmployee = async (req, res) => {
         } else {
             const deletedEmployee = await employeeModel.findByIdAndDelete(id);
             if (deletedEmployee) {
-                res.status(200).json(deletedEmployee);
+                const deletedEmployeeObj = deletedEmployee.toObject();
+                delete deletedEmployeeObj.password;
+                res.status(200).json(deletedEmployeeObj);
             } else {
                 res.status(404).json({ message: `Cannot delete employee for id: ${id}` });
             }
