@@ -2,12 +2,14 @@ const employeeModel = require('../models/employee-model');
 const bcrypt = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
+const validatePassword = require('../utils/password-validator-util');
 
 const register = async (req, res) => {
     try {
         const { firstName, lastName, gender, username, password } = req.body;
-        if (!password) {
-            throw new Error('Password is required');
+        const passwordValidationResult = validatePassword(password);
+        if (passwordValidationResult.length !== 0) { // not a valid password
+            throw new Error(`Invalid password. ${passwordValidationResult[0].message}`);
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         await employeeModel.create({ firstName, lastName, gender, username, password: hashedPassword });
