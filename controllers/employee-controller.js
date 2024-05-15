@@ -3,7 +3,7 @@ const employeeModel = require('../models/employee-model');
 const getEmployees = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 0;
-        const size = parseInt(req.query.size) || 5;
+        const size = Math.min(parseInt(req.query.size) || 5, 100);
         const employees = await employeeModel
             .find({}, { firstName: 1, lastName: 1, gender: 1, username: 1, roles: 1 })
             .skip(page * size)
