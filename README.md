@@ -13,6 +13,9 @@ JWT_SECRET=<secret-key>
 ```
 4. Use `npm run dev` command to run the app.
 
+## Documentation
+After running the API you can access the swagger documentation by visiting [http://localhost:3000/api-docs/](http://localhost:3000/api-docs/)
+
 ## Sample Requests
 
 ### Check system
