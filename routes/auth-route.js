@@ -6,7 +6,7 @@ const router = express.Router();
 /**
  * @swagger
  * /auth/register:
- *   get:
+ *   post:
  *     tags:
  *       - Auth
  *     summary: Register an employee
@@ -37,7 +37,7 @@ router.post('/register', register);
 /**
  * @swagger
  * /auth/login:
- *   get:
+ *   post:
  *     tags:
  *       - Auth
  *     summary: Login an employee
