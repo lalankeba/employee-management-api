@@ -13,6 +13,9 @@ const port = process.env.PORT || 3000;
 
 passportConfig(passport);
 
+const swaggerSpec = require('./swagger-spec');
+const swaggerUi = require('swagger-ui-express');
+
 app.use(logger);
 app.use(express.json());
 app.use(passport.initialize());
@@ -20,6 +23,7 @@ app.use(passport.initialize());
 app.use('/', homeRoute);
 app.use('/employees', employeeRoute);
 app.use('/auth', authRoute);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
