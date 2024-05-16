@@ -7,6 +7,8 @@ const router = express.Router();
  * @swagger
  * /:
  *   get:
+ *     tags:
+ *       - Root
  *     summary: Retrieves the message whether the system is up and running
  *     responses: 
  *       200:
@@ -18,6 +20,8 @@ router.all('/', init);
  * @swagger
  * /home:
  *   get:
+ *     tags:
+ *       - Root
  *     summary: Retrieves the message whether the system is up and running
  *     responses: 
  *       200:

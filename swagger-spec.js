@@ -6,7 +6,7 @@ const options = {
     info: {
         title: "Employee Management API Doc",
         version: "1.0.0",
-        description: "This is the documentation of the employee mamagement API.",
+        description: "This is the documentation of the employee management API.",
         contact: {
             name: "API Support",
             email: "lalankeba@gmail.com"
