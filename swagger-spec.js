@@ -12,6 +12,15 @@ const options = {
             email: "lalankeba@gmail.com"
         }
     },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT"
+        }
+      }
+    },
     servers: [
         {
             url: "http://localhost:3000/",

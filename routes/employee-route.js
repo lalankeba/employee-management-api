@@ -13,13 +13,9 @@ const router = express.Router();
  *       - Employees
  *     summary: Returns a list of employees.
  *     description: Admins can retrieve list of employees
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
- *       - name: Authorization
- *         in: header
- *         description: Bearer token for authorization.
- *         required: true
- *         schema:
- *           type: string
  *       - name: page, 
  *         in: query, 
  *         description: Page number. Starting from 0,
