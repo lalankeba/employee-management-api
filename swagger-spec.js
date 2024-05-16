@@ -1,4 +1,5 @@
 const swaggerJsdoc = require('swagger-jsdoc');
+const path = require('path');
 
 const options = {
   definition: {
@@ -13,6 +14,10 @@ const options = {
         }
     },
     components: {
+      schemas: {
+        Employee: require(path.join(__dirname, 'docs/schemas/employee-schema.json')).Employee,
+        LoginInfo: require(path.join(__dirname, 'docs/schemas/login-info.json')).LoginInfo
+      },
       securitySchemes: {
         bearerAuth: {
           type: "http",

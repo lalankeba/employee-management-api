@@ -1,0 +1,16 @@
+{
+    "LoginInfo": {
+        "type": "object",
+        "properties": {
+            "username": {
+                "type": "string",
+                "example": "john@example.com"
+            },
+            "password": {
+                "type": "string",
+                "example": "Pas$w0rd"
+            }
+        },
+        "required": ["username", "password"]
+    }
+}

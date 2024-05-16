@@ -1,0 +1,29 @@
+{
+    "Employee": {
+        "type": "object",
+        "properties": {
+            "firstName": {
+                "type": "string",
+                "example": "John"
+            },
+            "lastName": {
+                "type": "string",
+                "example": "Doe"
+            },
+            "gender": {
+                "type": "string",
+                "enum": ["MALE", "FEMALE", "CUSTOM"],
+                "example": "MALE"
+            },
+            "username": {
+                "type": "string",
+                "example": "john@example.com"
+            },
+            "password": {
+                "type": "string",
+                "example": "Pas$w0rd"
+            }
+        },
+        "required": ["firstName", "lastName", "gender", "username", "password"]
+    }
+}
