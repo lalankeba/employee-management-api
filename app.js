@@ -7,6 +7,7 @@ const employeeRoute = require('./routes/employee-route');
 const authRoute = require('./routes/auth-route');
 const passport = require('passport');
 const passportConfig = require('./middleware/passport-config');
+const errorHandler = require('./middleware/error-handler');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -24,6 +25,8 @@ app.use('/', homeRoute);
 app.use('/employees', employeeRoute);
 app.use('/auth', authRoute);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+app.use(errorHandler);
 
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
