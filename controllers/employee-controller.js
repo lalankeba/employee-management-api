@@ -1,14 +1,19 @@
 const employeeModel = require('../models/employee-model');
+const employeeService = require('../services/employee-service');
+const NotFoundError = require('../errors/not-found-error');
 
 const getEmployees = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 0;
         const size = Math.min(parseInt(req.query.size) || 5, 100);
-        const employees = await employeeModel
-            .find({}, { firstName: 1, lastName: 1, gender: 1, username: 1, roles: 1 })
-            .skip(page * size)
-            .limit(size);
-        res.status(200).json(employees);
+        if (page < 0) {
+            res.status(400).json({ message: `The page: ${page} parameter must be 0 or a positive integer` });
+        } else if (size < 1) {
+            res.status(400).json({ message: `The size: ${size} parameter must be a positive integer` });
+        } else {
+            const employees = await employeeService.getEmployees(page, size);
+            res.status(200).json(employees);
+        }
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -17,28 +22,33 @@ const getEmployees = async (req, res) => {
 const getEmployee = async (req, res) => {
     try {
         const loggedInEmployeeId = req.user.id;
-        const employee = await employeeModel.findById(loggedInEmployeeId, { firstName: 1, lastName: 1, gender: 1, username: 1, roles: 1, createdAt: 1, updatedAt: 1 });
-        if (employee) {
-            res.status(200).json(employee);
-        } else {
-            res.status(404).json({ message: `Employee cannot be found for id: ${loggedInEmployeeId}` });
-        }
+        const employee = await employeeService.getEmployee(loggedInEmployeeId);
+        res.status(200).json(employee);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        if (err instanceof NotFoundError) {
+            res.status(404).json({ message: err.message });
+        } else {
+            res.status(500).json({ message: err.message });
+        }
     }
 }
 
 const getOtherEmployee = async (req, res) => {
     try {
+        const loggedInEmployeeId = req.user.id;
         const { id } = req.params;
-        const employee = await employeeModel.findById(id, { firstName: 1, lastName: 1, gender: 1, username: 1, roles: 1, createdAt: 1, updatedAt: 1 });
-        if (employee) {
-            res.status(200).json(employee);
+        if (loggedInEmployeeId === id) {
+            res.status(400).json({ message: `Access denied. Use self API to get yourself` });
         } else {
-            res.status(404).json({ message: `Employee cannot be found for id: ${id}` });
+            const employee = await employeeService.getEmployee(id);
+            res.status(200).json(employee);
         }
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        if (err instanceof NotFoundError) {
+            res.status(404).json({ message: err.message });
+        } else {
+            res.status(500).json({ message: err.message });
+        }
     }
 }
 
@@ -46,17 +56,14 @@ const updateEmployee = async (req, res) => {
     try {
         const loggedInEmployeeId = req.user.id;
         const { firstName, lastName, gender } = req.body;
-        const dataToBeUpdated = {firstName, lastName, gender};
-        const updatedEmployee = await employeeModel.findByIdAndUpdate(loggedInEmployeeId, dataToBeUpdated, 
-            { new: true, runValidators: true })
-            .select({ firstName: 1, lastName: 1, gender: 1, username: 1, roles: 1, createdAt: 1, updatedAt: 1 });
-        if (updatedEmployee) {
-            res.status(200).json(updatedEmployee);
-        } else {
-            res.status(404).json({ message: `Cannot update employee for id: ${loggedInEmployeeId}` });
-        }
+        const updatedEmployee = await employeeService.updateEmployee(loggedInEmployeeId, firstName, lastName, gender);
+        res.status(200).json(updatedEmployee);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        if (err instanceof NotFoundError) {
+            res.status(404).json({ message: err.message });
+        } else {
+            res.status(500).json({ message: err.message });
+        }
     }
 }
 
@@ -68,18 +75,15 @@ const updateOtherEmployee = async (req, res) => {
             res.status(400).json({ message: `Access denied. Use self API to update yourself` });
         } else {
             const { firstName, lastName, gender, roles } = req.body;
-            const dataToBeUpdated = {firstName, lastName, gender, roles};
-            const updatedEmployee = await employeeModel.findByIdAndUpdate(id, dataToBeUpdated, 
-                { new: true, runValidators: true })
-                .select({ firstName: 1, lastName: 1, gender: 1, username: 1, roles: 1, createdAt: 1, updatedAt: 1 });
-            if (updatedEmployee) {
-                res.status(200).json(updatedEmployee);
-            } else {
-                res.status(404).json({ message: `Cannot update employee for id: ${id}` });
-            }
+            const updatedEmployee = await employeeService.updateOtherEmployee(id, firstName, lastName, gender, roles);
+            res.status(200).json(updatedEmployee);
         }
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        if (err instanceof NotFoundError) {
+            res.status(404).json({ message: err.message });
+        } else {
+            res.status(500).json({ message: err.message });
+        }
     }
 }
 
@@ -90,17 +94,15 @@ const deleteEmployee = async (req, res) => {
         if (loggedInEmployeeId === id) { // can't delete himself
             res.status(400).json({ message: `Access denied. You don't have necessary permission to delete youself` });
         } else {
-            const deletedEmployee = await employeeModel.findByIdAndDelete(id);
-            if (deletedEmployee) {
-                const deletedEmployeeObj = deletedEmployee.toObject();
-                delete deletedEmployeeObj.password;
-                res.status(200).json(deletedEmployeeObj);
-            } else {
-                res.status(404).json({ message: `Cannot delete employee for id: ${id}` });
-            }
+            const deletedEmployee = await employeeService.deleteEmployee(id);
+            res.status(200).json(deletedEmployee);
         }
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        if (err instanceof NotFoundError) {
+            res.status(404).json({ message: err.message });
+        } else {
+            res.status(500).json({ message: err.message });
+        }
     }
 }
 
