@@ -11,7 +11,10 @@ const register = async (firstName, lastName, gender, username, password) => {
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     const employee = await employeeModel.create({ firstName, lastName, gender, username, password: hashedPassword });
-    return employee;
+
+    const employeeObj = employee.toObject();
+    delete employeeObj.password;
+    return employeeObj;
 }
 
 const login = async (username, password) => {
