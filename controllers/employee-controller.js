@@ -1,4 +1,3 @@
-const employeeModel = require('../models/employee-model');
 const employeeService = require('../services/employee-service');
 const NotFoundError = require('../errors/not-found-error');
 
