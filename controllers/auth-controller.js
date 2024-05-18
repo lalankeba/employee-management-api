@@ -3,20 +3,24 @@ const bcrypt = require('bcryptjs');
 const jsonwebtoken = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const validatePassword = require('../utils/password-validator-util');
+const authService = require('../services/auth-service');
+const InvalidArgsError = require('../errors/invalid-args-error');
 
 const register = async (req, res) => {
     try {
         const { firstName, lastName, gender, username, password } = req.body;
         const passwordValidationResult = validatePassword(password);
         if (passwordValidationResult.length !== 0) { // not a valid password
-            throw new Error(`Invalid password. ${passwordValidationResult[0].message}`);
+            throw new InvalidArgsError(`Invalid password. ${passwordValidationResult[0].message}`);
         }
-        const hashedPassword = await bcrypt.hash(password, 10);
-        await employeeModel.create({ firstName, lastName, gender, username, password: hashedPassword });
+        await authService.register(firstName, lastName, gender, username, password);
         res.status(201).json({ message: `Employee: ${firstName} ${lastName} registered` });
     } catch (err) {
-        console.error('Registration error: ', err.message);
-        res.status(500).json({ message: err.message });
+        if (err instanceof InvalidArgsError) {
+            res.status(400).json({ message: err.message });
+        } else {
+            res.status(500).json({ message: err.message });
+        }
     }
 }
 
