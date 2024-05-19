@@ -4,13 +4,15 @@ This project is built with Node.js, Express, and MongoDB. It provides a simple A
 
 ## Features
 
-- Employee Registration & Login: Employees can register for an account and log in to access their profile.
-- JWT Authentication: Secure access to the API using JSON Web Tokens.
-- Employee Self-Management: Any employee can view and update their own profile information.
-- Admin Privileges:
+- **Employee Registration & Login**: Employees can register for an account and log in to access their profile.
+- **JWT Authentication**: Secure access to the API using JSON Web Tokens.
+- **Employee Self-Management**: Any employee can view and update their own profile information.
+- **Admin Privileges**:
   - View all employees.
   - Change employee roles.
   - Delete employee records.
+- **Password Policies**: Enforced password complexity requirements.
+- **Token Expiration**: Implemented token expiration for enhanced security.
 
 ## Installation
 
