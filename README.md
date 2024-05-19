@@ -30,8 +30,8 @@ JWT_SECRET=<secret-key>
 1. Register the first employee through the API.
 2. Perform database seeding to assign the ADMIN role to the first employee:
    1. Access your MongoDB instance.
-   2. Find the newly registered employee document in the employeess collection.
-   3. Update the employees’s roles array by adding ADMIN.
+   2. Find the newly registered employee document in the employees collection.
+   3. Update the employee’s roles array by adding ADMIN.
 
 ## Running Tests
 
@@ -50,11 +50,11 @@ You can access the Swagger documentation for this API by visiting: [http://local
 - `POST /auth/register`: Register a new employee.
 - `POST /auth/login`: Admin or employee login.
 - `GET /employees`: Get a list of employees. (Admins only)
-- `GET /employees/employee`: View logged-in employee's profile.
-- `GET /employees/employee/:id`: View any employee data. (Admin's only)
+- `GET /employees/employee`: View logged-in employees profile.
+- `GET /employees/employee/:id`: View any employee data. (Admins only)
 - `PUT /employees`: Update logged-in employee data.
-- `PUT /employees/:id`: Update any employee data. (Admin's only)
-- `DELETE /employees/:id`: Delete an employee. (Admin's only)
+- `PUT /employees/:id`: Update any employee data. (Admins only)
+- `DELETE /employees/:id`: Delete an employee. (Admins only)
 
 ## Sample Requests
 
@@ -67,25 +67,34 @@ curl http://localhost:3000/home
 ### Register employee
 ```
 curl http://localhost:3000/auth/register/ -H 'Content-Type: application/json' \
--d '{ "firstName": "John", "lastName":"Doe", "gender":"MALE", "username": "john@gmail.com", "password": "abcd1234" }'
+-d '{
+    "firstName": "John",
+    "lastName":"Doe",
+    "gender":"MALE",
+    "username": "john@example.com",
+    "password": "Abcd@1234"
+}'
 ```
 
 ### Login employee
 ```
 curl http://localhost:3000/auth/login/ -H 'Content-Type: application/json' \
--d '{ "username": "john@gmail.com", "password": "abcd1234" }'
+-d '{ 
+    "username": "john@example.com", 
+    "password": "Abcd@1234" 
+}'
 ```
 
 
 ### Get list of employees
-First 5 employees can be retrieved.
+If you don't specify the page and the size parameters, it will return first 5 employees.
 ```
 curl http://localhost:3000/employees/ -H 'Authorization: Bearer <token>'
 ```
 
-With pagination
+For more information, specify page and size parameters.
 ```
-curl http://localhost:3000/employees?page=1&size=5 -H 'Authorization: Bearer <token>'
+curl http://localhost:3000/employees?page=1&size=10 -H 'Authorization: Bearer <token>'
 ```
 
 ### Get logged in employee
@@ -100,22 +109,31 @@ curl http://localhost:3000/employees/employee/<id> -H 'Authorization: Bearer <to
 
 ### Update logged in employee
 ```
-curl -X PUT http://localhost:3000/employees/ -H 'Content-Type: application/json' \
+curl -X PUT http://localhost:3000/employees/ \
+-H 'Content-Type: application/json' \
 -H 'Authorization: Bearer <token>' \
--d '{ "firstName": "Mary", "lastName":"Anne", "gender":"FEMALE" }'
+-d '{
+    "firstName": "Mary", 
+    "lastName":"Anne", 
+    "gender":"FEMALE" 
+}'
 ```
 
 ### Update another employee
 ```
-curl -X PUT http://localhost:3000/employees/<id> -H 'Content-Type: application/json' \
+curl -X PUT http://localhost:3000/employees/<id> \
+-H 'Content-Type: application/json' \
 -H 'Authorization: Bearer <token>' \
--d '{ "firstName": "Mary", "lastName":"Anne", "gender":"FEMALE" }'
+-d '{ 
+    "firstName": "Mary", 
+    "lastName":"Anne", 
+    "gender":"FEMALE" 
+}'
 ```
 
 
 ### Delete employee (need to be an admin)
 ```
-curl -X PUT http://localhost:3000/employees/<id> -H 'Content-Type: application/json' \
--H 'Authorization: Bearer <token>' \
--d '{ "firstName": "Mary", "lastName":"Anne", "gender":"FEMALE" }'
+curl -X DELETE http://localhost:3000/employees/<id> \
+-H 'Authorization: Bearer <token>'
 ```
