@@ -8,7 +8,7 @@ This project is built with Node.js, Express, and MongoDB. It provides a simple A
 - **JWT Authentication**: Secure access to the API using JSON Web Tokens.
 - **Employee Self-Management**: Any employee can view and update their own profile information.
 - **Admin Privileges**:
-  - View all employees.
+  - View all employees. Supports pagination.
   - Change employee roles.
   - Delete employee records.
 - **Password Policies**: Enforced password complexity requirements.
@@ -44,7 +44,7 @@ npm test
 
 ## Swagger Documentation
 
-You can access the Swagger documentation for this API by visiting: [http://localhost:<port>/api-docs/](http://localhost:<port>/api-docs/)
+You can access the Swagger documentation for this API by visiting: [http://localhost:`<port>`/api-docs/](http://localhost:`<port>`/api-docs/). Replace the **<port>** with your actual port number.
 
 ## API Endpoints
 
@@ -94,7 +94,7 @@ If you don't specify the page and the size parameters, it will return first 5 em
 curl http://localhost:3000/employees/ -H 'Authorization: Bearer <token>'
 ```
 
-For more information, specify page and size parameters.
+For more information, specify **page** and **size** parameters.
 ```
 curl http://localhost:3000/employees?page=1&size=10 -H 'Authorization: Bearer <token>'
 ```
