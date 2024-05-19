@@ -1,20 +1,60 @@
 # employee-management-api
 
-Employee management system developed with Node.js, Express and MongoDB.
+This project is built with Node.js, Express, and MongoDB. It provides a simple API for managing employee data within an organization. The application supports user authentication through JSON Web Tokens (JWT), ensuring secure access to various functionalities based on user roles.
 
-## Setup
+## Features
+
+- Employee Registration & Login: Employees can register for an account and log in to access their profile.
+- JWT Authentication: Secure access to the API using JSON Web Tokens.
+- Employee Self-Management: Any employee can view and update their own profile information.
+- Admin Privileges:
+  - View all employees.
+  - Change employee roles.
+  - Delete employee records.
+
+## Installation
+
 1. Clone the repository
-2. Install the required dependencies by executing `npm install`
-3. Create a `.env` file with following contents.
+2. Navigate to the project directory: `cd employee-management-api`
+3. Install the required dependencies: `npm install`
+4. Set up environment variables (e.g., Port, MongoDB connection string, JWT secret). Create a `.env` file with following contents.
 ```
 MONGO_URI="<connection-string>"
 PORT=<desired-port>
 JWT_SECRET=<secret-key>
 ```
-4. Use `npm run dev` command to run the app.
+5. Start the server: `npm run dev`
 
-## Documentation
-After running the API you can access the swagger documentation by visiting [http://localhost:3000/api-docs/](http://localhost:3000/api-docs/)
+## Post-Installation
+
+1. Register the first employee through the API.
+2. Perform database seeding to assign the ADMIN role to the first employee:
+   1. Access your MongoDB instance.
+   2. Find the newly registered employee document in the employeess collection.
+   3. Update the employees’s roles array by adding ADMIN.
+
+## Running Tests
+
+To run the tests for this project, use the following command:
+```
+npm test
+```
+
+## Swagger Documentation
+
+You can access the Swagger documentation for this API by visiting: [http://localhost:<port>/api-docs/](http://localhost:<port>/api-docs/)
+
+## API Endpoints
+
+- `GET /`: Returns welcome message
+- `POST /auth/register`: Register a new employee.
+- `POST /auth/login`: Admin or employee login.
+- `GET /employees`: Get a list of employees. (Admins only)
+- `GET /employees/employee`: View logged-in employee's profile.
+- `GET /employees/employee/:id`: View any employee data. (Admin's only)
+- `PUT /employees`: Update logged-in employee data.
+- `PUT /employees/:id`: Update any employee data. (Admin's only)
+- `DELETE /employees/:id`: Delete an employee. (Admin's only)
 
 ## Sample Requests
 
