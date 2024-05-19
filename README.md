@@ -44,7 +44,7 @@ npm test
 
 ## Swagger Documentation
 
-You can access the Swagger documentation for this API by visiting: [http://localhost:`<port>`/api-docs/](http://localhost:`<port>`/api-docs/). Replace the **<port>** with your actual port number.
+You can access the Swagger documentation for this API by visiting: [http://localhost:`<port>`/api-docs/](http://localhost:3000/api-docs/). Replace the `<port>` with your actual port number.
 
 ## API Endpoints
 
